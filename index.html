@@ -1,0 +1,81 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Root Shootout – Playoff Week</title><link rel="stylesheet" href="quest.css">
+<style>body{background:linear-gradient(170deg,#0b3a1d,#05120a 75%);color:#eafff1}.card{background:#ffffff10;border:1px solid #9fffb433}
+button{background:#16a34a;color:#fff}button.alt,.opt,.path{background:#ffffff1a;color:#eafff1}button.go{background:#facc15;color:#221}
+.prog>div{background:linear-gradient(90deg,#16a34a,#facc15)}.steps{background:#0006;font-family:ui-monospace,monospace}.eqbox{background:#ffffff14}
+.donep{opacity:.6}svg text{fill:#eafff1;font:14px system-ui}svg .ln{stroke:#facc15;stroke-width:3;fill:none}svg .sh{fill:#16a34a55;stroke:#facc15;stroke-width:3}</style></head>
+<body><div class="wrap"><h1>⚽🏀 Root Shootout</h1><div id="ctl" class="card small"></div><div id="app"></div></div>
+<script src="tracker.js"></script><script src="quest-engine.js"></script><script>
+const MC=o=>Object.assign({type:'mc'},o),NUM=o=>Object.assign({type:'num'},o),STEPS=o=>Object.assign({type:'steps'},o),TAP=o=>Object.assign({type:'tap'},o);
+const MOVE=(eq,opts,a,res,why,q)=>({eq,opts,a,res,why,q});
+const XLINES=`<svg class="fig" viewBox="0 0 220 140" width="260"><line class="ln" x1="20" y1="20" x2="200" y2="120"/><line class="ln" x1="20" y1="120" x2="200" y2="20"/>
+<text x="88" y="40">(3x − 12)°</text><text x="98" y="112">48°</text></svg>`;
+const PITCH=`<svg class="fig" viewBox="-30 -20 260 170" width="290"><rect class="sh" x="0" y="0" width="200" height="120"/><line class="ln" x1="0" y1="120" x2="200" y2="0" stroke-dasharray="8 6"/>
+<text x="85" y="140">40 m</text><text x="-28" y="65">30 m</text><text x="104" y="52">d = ?</text></svg>`;
+const L_SHAPE=`<svg class="fig" viewBox="-40 -25 280 160" width="300"><polygon class="sh" points="0,0 180,0 180,100 0,100"/><polygon class="sh" points="180,30 230,30 230,70 180,70"/>
+<text x="75" y="120">18 m</text><text x="-38" y="55">10 m</text><text x="188" y="22">6 m</text><text x="236" y="55">4 m</text><text x="40" y="-8">(not to scale)</text></svg>`;
+QuestEngine.start({game:'root-shootout',defaultPlayer:'Sebastian',emoji:'🏆',unit:'shots',confBonus:true,hintCost:1,studyCard:true,
+title:'Playoff Week',
+story:'Playoff week for the Fowler Falcons, on the court AND on the pitch. Win the <b>Square Root Shootout</b> at the free-throw line, design the <b>Field & Court</b> for the big game, and break down suspense in the <b>Film Study</b> room. Hints are on the bench if you need them, but now they cost a little ⭐. Real players learn to check their own shots!',
+strategy:`<p><b>⭐ Call your shot</b> before every check (no default). 😎 Sure + right → +5. 😬 Guessing + not yet → +3 honesty bonus.</p>
+<p><b>💡 Hints cost ⭐ now</b> (1–3 points, shown on the button). Try first, then buy a hint if you're truly stuck. After a miss, the hint is free.</p>
+<p><b>🔍 Check your own shot.</b> On some plays you'll be asked HOW to check your answer (plug it back in, estimate). Each good self-check = +3 ⭐.</p>
+<p>At the end you'll make your own <b>study card</b>, the 1–2 things future-you needs to remember.</p>`,
+hubTitle:'📋 Pick your drill',hubHint:'Your call. Finish all three to win the playoff.',
+studyQ:'Write 1–2 key takeaways in your own words: a rule plus a tiny example.',studyTip:'Example: “√50 is between 7 and 8 because 7² = 49 and 8² = 64.”',
+paths:[
+{id:'roots',emoji:'🎯',name:'Square Root Shootout',desc:'Perfect squares, cube roots, estimating √ between integers, rational vs irrational, x² and x³ equations.',doneMsg:'Nothing but net! Shootout won.',
+strategy:`<p><b>Shootout Playbook: Undo the power 🔁</b></p><ul>
+<li><b>√</b> asks: “what number times ITSELF makes this?” √49 = 7 because 7 × 7 = 49.</li>
+<li><b>∛</b> asks: “what number used 3 times makes this?” ∛64 = 4 because 4 × 4 × 4 = 64. Negatives work: ∛(−8) = −2.</li>
+<li><b>Know your perfect squares:</b> 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144…</li>
+<li><b>Estimate</b> a non-perfect root by trapping it between perfect squares: 49 &lt; 50 &lt; 64, so 7 &lt; √50 &lt; 8, and it is very close to 7.</li>
+<li><b>x² = 49</b> has TWO answers: x = 7 or x = −7 (written ±7). <b>x³ = −27</b> has ONE answer: −3.</li>
+<li><b>Rational</b> = can be written as a fraction (including ints, terminating or repeating decimals). <b>Irrational</b> = never-ending, never-repeating decimal, like √2 or √50.</li></ul>
+<p>🔍 <b>Check:</b> square (or cube) your answer and see if you land back on the original number.</p>`,
+items:[
+NUM({id:'r1',skill:'perfect-square-root',label:'Shot 1',hintCost:1,q:'Practice jersey numbers are perfect squares. What is √144?',a:'12',h:'Which number times itself is 144? Try 10 × 10 = 100, then go up.',s:'12 × 12 = 144, so √144 = 12.',
+ selfCheck:{q:'How could you check √144 = 12 yourself?',opts:['Multiply 12 × 12 and see if you get 144','Divide 144 by 2 and see if you get 12','Add 12 + 12 and see if you get 144','See if 144 and 12 both end in an even digit'],a:0,why:'Undo the root: 12 × 12 = 144 ✓. Squaring is the check for a square root.'}}),
+NUM({id:'r2',skill:'cube-root',label:'Shot 2',hintCost:1,q:'The team packs 64 cube-shaped water-bottle boxes into one big cube. How many boxes long is each edge? (∛64)',a:'4',h:'Which number used three times (n × n × n) makes 64?',s:'4 × 4 × 4 = 16 × 4 = 64, so ∛64 = 4.'}),
+MC({id:'r3',skill:'estimate-root-integers',label:'Shot 3',hintCost:2,q:'Between which two whole numbers is √50?',opts:['Between 6 and 7','Between 7 and 8','Between 8 and 9','Between 24 and 26'],a:1,h:'Find the perfect squares just below and just above 50.',s:'7² = 49 and 8² = 64.\n49 < 50 < 64, so 7 < √50 < 8.\n(Not 25: half of 50 is NOT its square root!)'}),
+NUM({id:'r4',skill:'estimate-root-tenth',label:'Shot 4',hintCost:2,q:'Estimate √50 to the nearest tenth.',a:'7.1',ph:'e.g. 6.4',h:'50 is just 1 more than 49, so √50 is just a little more than 7. Try squaring 7.1 and 7.2.',s:'7.1² = 50.41 (very close to 50)\n7.0² = 49, 7.2² = 51.84\nSo √50 ≈ 7.1 (calculator: 7.071…)',
+ selfCheck:{q:'Check your estimate without a calculator for roots. What does 7.1² tell you?',opts:['7.1² = 14.2, so the estimate is too small','7.1² = 49.1, so 7.1 is a little too small','7.1² = 50.41, close to 50, so 7.1 fits','7.1² = 57.1, so the estimate is too large'],a:2,why:'7.1 × 7.1 = 50.41. It is the closest tenth: 7.0² = 49 is 1 away, 7.2² = 51.84 is farther.'}}),
+MC({id:'r5',skill:'rational-irrational',label:'Shot 5',hintCost:2,q:'Which number is IRRATIONAL?',opts:['√49','√20','0.25','−3/4'],a:1,h:'Is the number under the √ a perfect square? If not, the decimal never ends or repeats.',s:'√49 = 7 (rational)\n0.25 = 1/4 (rational)\n−3/4 is a fraction (rational)\n√20 ≈ 4.4721… never ends, never repeats → IRRATIONAL (20 is not a perfect square).'}),
+STEPS({id:'r6',skill:'solve-x-squared',label:'Shot 6',hintCost:3,q:'Solve x² = 49 one move at a time.',h:'Undo squaring with a square root, and remember the negative!',s:'x² = 49\nx = ±√49 = ±7\nCheck: 7² = 49 ✓ and (−7)² = 49 ✓',steps:[
+MOVE('x² = 49',['Take the square root of both sides: x = ±7','Divide both sides by 2: x = 24.5','Take the square root of both sides: x = 7 only','Subtract 2 from both sides: x = 47'],0,'x = ±7','Squaring is undone by a square root. Both 7² and (−7)² equal 49, so there are two answers.'),
+MOVE('x = ±7',['Check: 7² = 49 and (−7)² = 49 ✓','Check: 7 × 2 = 14, so the answer is wrong','Check: −7 × 2 = −14, so drop the −7','No check is needed for square roots'],0,'','Plug BOTH answers back into x². (−7) × (−7) = +49.','Which check proves both answers work?')]}),
+NUM({id:'r7',skill:'solve-x-cubed',label:'Shot 7 · Solo',hintCost:3,q:'Solve x³ = −27.',a:'-3',h:'Which number used three times makes −27? A negative × negative × negative is negative.',s:'x = ∛(−27) = −3\nCheck: (−3)(−3)(−3) = 9 × (−3) = −27 ✓\nOnly one answer: 3³ = +27, not −27.',
+ selfCheck:{q:'Plug it back in. What is (−3)³?',opts:['(−3)(−3) = 9, so it does not work','(−3)(−3)(−3) = −27, so it works','−3 × 3 = −9, so it does not work','3³ = 27, so x should be 3 instead'],a:1,why:'(−3)(−3) = 9, then 9 × (−3) = −27 ✓. Cube roots of negatives are negative.'}})]},
+{id:'geo',emoji:'🏟️',name:'Field & Court Design',desc:'Angles with algebra, a composite area, and the Pythagorean theorem (court diagonal).',doneMsg:'Field and court are game-ready!',
+strategy:`<p><b>Design Playbook 📐</b> Name the relationship FIRST, then write the equation.</p><ul>
+<li><b>Vertical angles</b> (across an X): equal. <b>Supplementary</b> (straight line): add to 180°.</li><li><b>Triangle:</b> three angles add to 180°.</li>
+<li><b>Parallel lines + transversal:</b> corresponding and alternate interior angles are <b>equal</b>; same-side interior add to <b>180°</b>.</li>
+<li><b>Composite area:</b> split into rectangles and add (or subtract a missing piece).</li>
+<li><b>NEW: Pythagorean theorem</b> (right triangles only): a² + b² = c², where c is the longest side (across from the right angle). Find c with a square root. This is where square roots meet geometry!</li></ul>
+<p>🔍 <b>Check:</b> the hypotenuse must be the LONGEST side; angles in a triangle must total 180°.</p>`,
+items:[
+NUM({id:'g1',skill:'vertical-angles-algebra',label:'Design 1',hintCost:1,ctx:XLINES,q:'Two passing lanes cross like an X. The vertical angles are 48° and (3x − 12)°. Find x.',a:'20',h:'Vertical angles are equal: 3x − 12 = 48.',s:'3x − 12 = 48\n3x = 60 → x = 20\nCheck: 3(20) − 12 = 48 ✓'}),
+NUM({id:'g2',skill:'triangle-sum-algebra',label:'Design 2',hintCost:1,q:'Three players form a passing triangle. Its angles measure x°, 2x°, and 3x°. Find x.',a:'30',h:'All three angles add to 180°: x + 2x + 3x = 180.',s:'6x = 180 → x = 30\nAngles: 30°, 60°, 90°\nCheck: 30 + 60 + 90 = 180 ✓',
+ selfCheck:{q:'How can you check x = 30?',opts:['See if 30 is less than 90°, so it fits a triangle','Find all three angles and see if they add to 180°','Multiply 30 × 3 and see if you get 180°','Check that 30 is an even number of degrees'],a:1,why:'30 + 60 + 90 = 180 ✓. Always rebuild every angle and add them back up.'}}),
+NUM({id:'g3',skill:'parallel-lines-algebra',label:'Design 3',hintCost:2,q:'The two sidelines of the pitch are parallel, and a diagonal run crosses both (a transversal). A pair of corresponding angles measure (4x + 8)° and 120°. Find x.',a:'28',h:'Corresponding angles are equal: 4x + 8 = 120.',s:'4x + 8 = 120\n4x = 112 → x = 28\nCheck: 4(28) + 8 = 120 ✓'}),
+NUM({id:'g4',skill:'composite-area',label:'Design 4',hintCost:2,ctx:L_SHAPE,q:'A training area is an 18 m × 10 m rectangle with a 6 m × 4 m warm-up box attached to one side. What is the total AREA in square meters?',a:'204',h:'Find each rectangle\'s area, then add.',s:'18 × 10 = 180\n6 × 4 = 24\n180 + 24 = 204 m²'}),
+NUM({id:'g5',skill:'pythagorean-hypotenuse',label:'Design 5 · Bridge',hintCost:3,ctx:PITCH,q:'A small-sided soccer pitch is 40 m long and 30 m wide. How long is the diagonal run from one corner to the opposite corner (d, in meters)?',a:'50',h:'The diagonal is the hypotenuse: 30² + 40² = d². Then take the square root.',s:'30² + 40² = 900 + 1600 = 2500\nd = √2500 = 50 m',
+ selfCheck:{q:'Does 50 m make sense? Pick the best check.',opts:['30² + 40² = 2500 = 50², and 50 is longer than 40 ✓','30 + 40 = 70, so the diagonal should be exactly 70 m','40 − 30 = 10, so the diagonal should be 10 m','50 is a round number, so it is probably right'],a:0,why:'Plug back into a² + b² = c², AND check the hypotenuse is the longest side but shorter than walking both edges (70).'}}),
+NUM({id:'g6',skill:'pythagorean-leg',label:'Design 6 · Bridge',hintCost:3,q:'A portable basketball hoop has a 13 ft support pole leaning from the base out to the backboard. Its foot sits 5 ft from the point straight below the backboard. Treat it as a right triangle: how high (in ft) does the pole reach?',a:'12',h:'13 is the hypotenuse. 5² + h² = 13², so h² = 169 − 25.',s:'5² + h² = 13²\n25 + h² = 169\nh² = 144 → h = 12 ft\nCheck: 5² + 12² = 25 + 144 = 169 = 13² ✓'})]},
+{id:'film',emoji:'🎬',name:'Close Reading Film Study',desc:'Break down a short suspense scene like game tape: word choice, mood, narrator, evidence.',doneMsg:'Film study complete. You read like a scout!',
+title:'“The Last Kick” (an original scene)',
+passage:['The stadium lights hummed like angry bees above the pitch.','“Everyone in the stands is chanting my name,” I tell myself. “Every single one of them.”','Yet when I glance up, half the crowd wears the other team\'s red scarves, and their whistles slice through the cold air.','My boots feel heavy, as if the wet grass is trying to swallow them.','I set the ball down, step back three paces, and tell myself the goalkeeper looks small and frightened.','He is bouncing on his toes, grinning, stretching his arms so wide they seem to touch both posts.','The whistle shrieks.'],
+strategy:`<p><b>Film Study Playbook: Read it like game tape 🎥</b> Scouts watch the same play several times, looking for something different each time. Close readers do the same.</p><ol>
+<li><b>W – Word choice:</b> circle strong verbs and comparisons (“sliced”, “like angry bees”). Ask: why THIS word?</li>
+<li><b>M – Mood:</b> how do those words make the reader FEEL? (tense, calm, eerie…)</li>
+<li><b>N – Narrator:</b> can we trust them? Look for places where what they SAY doesn't match what we SEE.</li>
+<li><b>E – Evidence:</b> pick the quote that DIRECTLY proves your claim, not one that's just related.</li></ol>
+<p>Use this W-M-N-E routine on any story, including the one you're reading for class.</p>`,
+items:[
+MC({id:'c1',skill:'word-choice-mood',label:'Tape 1',hintCost:1,q:'The writer uses “hummed like angry bees,” “slice,” and “shrieks.” What MOOD do these word choices mostly create?',opts:['Tense and threatening','Calm, safe, and peaceful','Silly, playful, and light','Sad and lonely'],a:0,h:'Picture angry bees and a shrieking whistle. Are those relaxing sounds?',s:'Angry bees, slicing whistles, and shrieking all sound sharp and dangerous → a tense, threatening mood.'}),
+TAP({id:'c2',skill:'unreliable-narrator',label:'Tape 2',hintCost:2,q:'The narrator claims EVERYONE in the stands is chanting his name. Tap the sentence that shows he is NOT a reliable narrator about the crowd.',a:2,h:'Find the sentence where what he SEES doesn\'t match what he SAYS.',s:'S3: half the crowd wears the OTHER team\'s scarves and whistles at him. His claim and the facts don\'t match, so we can\'t fully trust him.'}),
+MC({id:'c3',skill:'best-evidence',label:'Tape 3 · Solo',hintCost:3,q:'Claim: “The narrator is trying to calm himself down by telling himself things that aren\'t true.” Which evidence BEST supports this claim?',opts:['S5 + S6: he “tells himself” the keeper looks frightened, but the keeper is grinning','S1: the stadium lights “hummed like angry bees” above the whole pitch at night','S7: “The whistle shrieks,” which shows that the referee started the penalty kick','S4: his boots “feel heavy,” which proves that his shoes are completely soaked with rain'],a:0,h:'The claim has two parts: (1) he tells himself things, (2) they aren\'t true. Which choice proves BOTH?',s:'S5 shows him telling himself something; S6 shows it is false (the keeper is confident, not scared). The others are related to the scene but don\'t prove the claim.',
+ selfCheck:{q:'Self-check your evidence. What test should it pass?',opts:['It is the longest quote you can find in the passage','It comes from the very first sentence of the passage','It uses the most interesting or exciting words','It directly proves EVERY part of the claim'],a:3,why:'Strong evidence proves the claim directly. Ask: “Does this quote show BOTH parts of my claim?”'}})]}],
+reflectChips:['Undo the power','Trap it between perfect squares','Remember ±','Name the angle relationship','a² + b² = c²','W-M-N-E close read','Checking my own answer'],
+reflectQ:'Which strategy helped you most today, and why?',askTutorName:true,winMsg:'PLAYOFF CHAMPIONS! 🏆'});
+</script></body></html>
